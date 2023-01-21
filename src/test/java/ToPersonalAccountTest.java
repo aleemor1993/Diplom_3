@@ -79,8 +79,6 @@ public class ToPersonalAccountTest {
         new WebDriverWait(driver, Duration.ofSeconds(3))
                 .until(ExpectedConditions.visibilityOf(driver.findElement(accountPage.getTextProfile())));
 
-        Thread.sleep(1000);
-
         Assert.assertEquals(accountPage.getUrl(), driver.getCurrentUrl());
 
     }

@@ -11,7 +11,7 @@ public class UserGenerator {
     }
 
     public static String generic(){
-        return "alexandra.morkvina@yandex.ru";
+        return "johnnletit169snow@yandex.ru";
     }
 
 }

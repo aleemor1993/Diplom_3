@@ -45,9 +45,13 @@ public class LoginTest {
         loginGeneric(driver);
         Thread.sleep(1000);
 
+        MainPage mainPage = new MainPage(driver);
+        new WebDriverWait(driver, Duration.ofSeconds(5))
+                .until(ExpectedConditions.visibilityOf(driver.findElement
+                        (mainPage.getConstructorButton())));
+
         Assert.assertEquals("https://stellarburgers.nomoreparties.site/", driver.getCurrentUrl());
 
-        MainPage mainPage = new MainPage(driver);
         mainPage.clickPersonalAccountButton();
 
         AccountPage accountPage = new AccountPage(driver);
