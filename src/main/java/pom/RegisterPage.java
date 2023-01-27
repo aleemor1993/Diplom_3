@@ -3,11 +3,13 @@ package pom;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 
+import static main.BaseURI.REGISTER;
+
 public class RegisterPage {
 
     private WebDriver driver;
 
-    private final String url = "https://stellarburgers.nomoreparties.site/register";
+    private final String url = REGISTER;
 
     private final By nameLabel = By.xpath(".//label[@class='input__placeholder text noselect text_type_main-default' and text()='Имя']");
 
@@ -75,4 +77,7 @@ public class RegisterPage {
         driver.findElement(loginOnRegisterButton).click();
     }
 
+    public By getLoginOnRegisterButton() {
+        return loginOnRegisterButton;
+    }
 }

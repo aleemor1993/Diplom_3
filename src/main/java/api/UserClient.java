@@ -1,5 +1,6 @@
 package api;
 
+import api.requests.DeleteUser;
 import api.requests.LoginUser;
 import io.restassured.response.ValidatableResponse;
 
@@ -22,13 +23,13 @@ public class UserClient {
 
     }
 
-    public ValidatableResponse deleteUserSuccessfully(String accessToken, String email){
+    public ValidatableResponse deleteUserSuccessfully(String accessToken, DeleteUser deleteUser){
         return given()
                 .log().all()
                 .header("Content-type", "application/json")
                 .header("Authorization", accessToken)
                 .baseUri(BASE_URI)
-                .body(String.format("{\"email\": \"%s\"}", email))
+                .body(deleteUser)
                 .when()
                 .delete(USER).then().log().all();
     }

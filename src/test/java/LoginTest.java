@@ -3,20 +3,16 @@ import org.junit.*;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.WebDriverWait;
 import pom.AccountPage;
 import pom.MainPage;
 
-import java.time.Duration;
-
-import static steps.LoginSteps.chooseLoginFirstStep;
-import static steps.LoginSteps.loginGeneric;
+import static steps.Steps.chooseLoginFirstStep;
+import static steps.Steps.loginGeneric;
 
 @RunWith(Parameterized.class)
 public class LoginTest {
 
-    int addressButton;
+    private int addressButton;
 
     @Rule
     public BrowserRule browserRule = new BrowserRule();
@@ -36,28 +32,20 @@ public class LoginTest {
     }
 
     @Test
-    public void loginByDifferentButtons() throws InterruptedException {
+    public void loginByDifferentButtons() {
 
         WebDriver driver = browserRule.getDriver();
+        MainPage mainPage = new MainPage(driver);
+        AccountPage accountPage = new AccountPage(driver);
 
+        //переход на нужную страницу
         chooseLoginFirstStep(driver, addressButton);
 
         loginGeneric(driver);
-        Thread.sleep(1000);
-
-        MainPage mainPage = new MainPage(driver);
-        new WebDriverWait(driver, Duration.ofSeconds(5))
-                .until(ExpectedConditions.visibilityOf(driver.findElement
-                        (mainPage.getConstructorButton())));
-
-        Assert.assertEquals("https://stellarburgers.nomoreparties.site/", driver.getCurrentUrl());
 
         mainPage.clickPersonalAccountButton();
 
-        AccountPage accountPage = new AccountPage(driver);
-        new WebDriverWait(driver, Duration.ofSeconds(3))
-                .until(ExpectedConditions.visibilityOf(driver.findElement(accountPage.getTextProfile())));
+        Assert.assertEquals("Профиль", driver.findElement(accountPage.getTextProfile()).getText());
 
-        Assert.assertEquals("https://stellarburgers.nomoreparties.site/account/profile", driver.getCurrentUrl());
     }
 }

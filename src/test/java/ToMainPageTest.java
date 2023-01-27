@@ -5,14 +5,10 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.WebDriverWait;
 import pom.MainPage;
 
-import java.time.Duration;
-
-import static steps.LoginSteps.loginGeneric;
-
+import static main.BaseURI.*;
+import static steps.Steps.loginGeneric;
 
 //кейсы на переход на главную страницу по нажатию на Конструктор и лого
 @RunWith(Parameterized.class)
@@ -31,35 +27,29 @@ public class ToMainPageTest {
     @Parameterized.Parameters
     public static Object[][] getParams() {
         return new Object[][] {
-                {"https://stellarburgers.nomoreparties.site/register"},
-                {"https://stellarburgers.nomoreparties.site/login"},
-                {"https://stellarburgers.nomoreparties.site/feed"},
-                {"https://stellarburgers.nomoreparties.site"},
-                {"https://stellarburgers.nomoreparties.site/forgot-password"},
-                {"https://stellarburgers.nomoreparties.site/account/profile"},
+                {REGISTER},
+                {LOGIN},
+                {FEED},
+                {MAIN},
+                {FORGOT},
+                {PROFILE},
         };
     }
 
     @Test
-    public void clickConstructorTest() throws InterruptedException {
+    public void clickConstructorTest() {
 
         WebDriver driver = browserRule.getDriver();
+        MainPage mainPage = new MainPage(driver);
 
-        if (!("https://stellarburgers.nomoreparties.site/account/profile".equals(startPage))) {
+        if (!(PROFILE.equals(startPage))) {
         driver.get(startPage);
         } else {
 
             loginGeneric(driver);
-
-            MainPage mainPage = new MainPage(driver);
             mainPage.clickPersonalAccountButton();
 
         }
-
-        MainPage mainPage = new MainPage(driver);
-
-        new WebDriverWait(driver, Duration.ofSeconds(3))
-                .until(ExpectedConditions.visibilityOf(driver.findElement(mainPage.getConstructorButton())));
 
         mainPage.clickConstructorButton();
 
@@ -68,26 +58,19 @@ public class ToMainPageTest {
     }
 
     @Test
-    public void clickLogoTest() throws InterruptedException {
+    public void clickLogoTest(){
 
         WebDriver driver = browserRule.getDriver();
+        MainPage mainPage = new MainPage(driver);
 
-        if (!("https://stellarburgers.nomoreparties.site/account/profile".equals(startPage))) {
+        if (!(PROFILE.equals(startPage))) {
             driver.get(startPage);
         } else {
 
             loginGeneric(driver);
-
-            MainPage mainPage = new MainPage(driver);
             mainPage.clickPersonalAccountButton();
 
         }
-
-        MainPage mainPage = new MainPage(driver);
-
-        new WebDriverWait(driver, Duration.ofSeconds(3))
-                .until(ExpectedConditions.visibilityOf(driver.findElement(mainPage.getConstructorButton())));
-
         mainPage.clickLogo();
 
         Assert.assertEquals(mainPage.getUrl(),driver.getCurrentUrl());

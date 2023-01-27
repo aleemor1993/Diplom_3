@@ -3,11 +3,13 @@ package pom;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 
+import static main.BaseURI.MAIN;
+
 public class MainPage {
 
     WebDriver driver;
 
-    private final String url = "https://stellarburgers.nomoreparties.site/";
+    private final String url = MAIN;
 
     private final By enterIntoAccountButton = By.xpath(".//button[@class='button_button__33qZ0 button_button_type_primary__1O7Bx button_button_size_large__G21Vg' and text()='Войти в аккаунт']");
 
@@ -22,6 +24,12 @@ public class MainPage {
     private final By constructorButton = By.xpath(".//p[@class='AppHeader_header__linkText__3q_va ml-2' and text()='Конструктор']");
 
     private final By logo = By.xpath(".//div[@class='AppHeader_header__logo__2D0X2']");
+
+    private final By activeTabSauces = By.xpath(".//div[contains(@class,'tab_tab_type_current__2BEPc')]/span[text()='Соусы']");
+
+    private final By activeTabFillings = By.xpath(".//div[contains(@class,'tab_tab_type_current__2BEPc')]/span[text()='Начинки']");
+
+    private final By activeTabBuns = By.xpath(".//div[contains(@class,'tab_tab_type_current__2BEPc')]/span[text()='Булки']");
 
     public MainPage(WebDriver driver) {
         this.driver = driver;
@@ -67,6 +75,15 @@ public class MainPage {
         driver.findElement(sectionFillings).click();
     }
 
+    public By getActiveTabSauces() {
+        return activeTabSauces;
+    }
 
+    public By getActiveTabFillings() {
+        return activeTabFillings;
+    }
 
+    public By getActiveTabBuns() {
+        return activeTabBuns;
+    }
 }

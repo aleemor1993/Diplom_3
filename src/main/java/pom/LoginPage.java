@@ -3,11 +3,13 @@ package pom;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 
+import static main.BaseURI.LOGIN;
+
 public class LoginPage {
 
     WebDriver driver;
 
-    private final String url = "https://stellarburgers.nomoreparties.site/login";
+    private final String url = LOGIN;
 
     private final By loginHeader = By.xpath(".//h2[text()='Вход']");
 

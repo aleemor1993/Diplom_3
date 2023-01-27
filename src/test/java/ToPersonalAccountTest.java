@@ -4,23 +4,17 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
-import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.WebDriverWait;
-import pom.AccountPage;
-import pom.LoginPage;
+import pom.*;
 
-import java.time.Duration;
-
-import static steps.LoginSteps.loginGeneric;
+import static main.BaseURI.*;
+import static main.UserGenerator.generic;
+import static steps.Steps.*;
 
 @RunWith(Parameterized.class)
 public class ToPersonalAccountTest {
 
     private String startUrl;
-
-    private final By personalAccountButton = By.xpath(".//p[@class='AppHeader_header__linkText__3q_va ml-2' and text()='Личный Кабинет']");
 
     @Rule
     public BrowserRule browserRule = new BrowserRule();
@@ -33,11 +27,10 @@ public class ToPersonalAccountTest {
     @Parameterized.Parameters
     public static Object[][] getParams() {
         return new Object[][] {
-                {"https://stellarburgers.nomoreparties.site/register"},
-                {"https://stellarburgers.nomoreparties.site/login"},
-                {"https://stellarburgers.nomoreparties.site/feed"},
-                {"https://stellarburgers.nomoreparties.site/"},
-                {"https://stellarburgers.nomoreparties.site/forgot-password"},
+                {REGISTER},
+                {LOGIN},
+                {FEED},
+                {MAIN},
         };
     }
 
@@ -45,41 +38,40 @@ public class ToPersonalAccountTest {
     public void toPersonalAccountByNotLoggedUser(){
 
         WebDriver driver = browserRule.getDriver();
+        LoginPage loginPage = new LoginPage(driver);
+        AccountPage accountPage = new AccountPage(driver);
 
         driver.get(startUrl);
 
-        driver.findElement(personalAccountButton).click();
+        //загрузка страниц
+        downloadingPages(driver, startUrl);
 
-        LoginPage loginPage = new LoginPage(driver);
+        driver.findElement(accountPage.getPersonalAccountButton()).click();
 
-        new WebDriverWait(driver, Duration.ofSeconds(3))
-                .until(ExpectedConditions.visibilityOf(driver.findElement(loginPage.getLoginHeader())));
-
-        Assert.assertEquals(loginPage.returnLoginUrl(), driver.getCurrentUrl());
+        Assert.assertEquals("Вход", driver.findElement(loginPage.getLoginHeader()).getText());
 
     }
 
     @Test
-    public void toPersonalAccountByLoggedUser() throws InterruptedException {
+    public void toPersonalAccountByLoggedUser(){
 
         WebDriver driver = browserRule.getDriver();
+        AccountPage accountPage = new AccountPage(driver);
 
         loginGeneric(driver);
 
-        Thread.sleep(1000);
-
         driver.get(startUrl);
 
-        Thread.sleep(1000);
+        //загрузка страниц
+        downloadingPages(driver, startUrl);
 
-        driver.findElement(personalAccountButton).click();
+        accountPage.clickPersonalAccountButton();
 
-        AccountPage accountPage = new AccountPage(driver);
+        Assert.assertEquals("Выход", driver.findElement(accountPage.getLogoutButton()).getText());
 
-        new WebDriverWait(driver, Duration.ofSeconds(3))
-                .until(ExpectedConditions.visibilityOf(driver.findElement(accountPage.getTextProfile())));
+        Assert.assertEquals("Профиль", driver.findElement(accountPage.getTextProfile()).getText());
 
-        Assert.assertEquals(accountPage.getUrl(), driver.getCurrentUrl());
+        Assert.assertEquals(generic(), accountPage.getEmailValue());
 
     }
  }

@@ -1,3 +1,4 @@
+import api.requests.DeleteUser;
 import api.requests.LoginUser;
 import api.UserAssertions;
 import api.UserClient;
@@ -6,12 +7,11 @@ import main.UserGenerator;
 import org.junit.*;
 import org.openqa.selenium.WebDriver;
 import main.BrowserRule;
-import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.WebDriverWait;
 import pom.LoginPage;
 import pom.RegisterPage;
 
-import java.time.Duration;
+import static main.BaseURI.REGISTER;
+import static main.UserGenerator.PASSWORD;
 
 public class RegisterTest {
 
@@ -27,10 +27,11 @@ public class RegisterTest {
     private boolean registered = false;
 
     @Test
-    public void registerNewUserSuccessfully() throws InterruptedException {
-        WebDriver driver = browserRule.getDriver();
+    public void registerNewUserSuccessfully() {
 
+        WebDriver driver = browserRule.getDriver();
         RegisterPage registerPage = new RegisterPage(driver);
+        LoginPage loginPage = new LoginPage(driver);
 
         registerPage.open();
 
@@ -38,39 +39,30 @@ public class RegisterTest {
         registerPage.clickNameLabel();
         registerPage.fillNameField();
 
-        Thread.sleep(3000);
         //генерация нового почтового адреса
         newEmail = UserGenerator.generateUserEmail();
 
         //заполнение поля Email
         registerPage.clickEmailLabel();
         registerPage.fillEmailField(newEmail);
-
-        Thread.sleep(3000);
 
         //заполнение поля Пароль
         registerPage.clickPasswordLabel();
         registerPage.fillPasswordField();
 
-        Thread.sleep(3000);
-
         //нажатие кнопки Зарегистрироваться
         registerPage.clickRegistrationButton();
 
-        LoginPage loginPage = new LoginPage(driver);
-
-        new WebDriverWait(driver, Duration.ofSeconds(3))
-                .until(ExpectedConditions.visibilityOf(driver.findElement(loginPage.getLoginHeader())));
-
-        Assert.assertEquals(driver.getCurrentUrl(), "https://stellarburgers.nomoreparties.site/login");
-
         registered = true;
+
+        Assert.assertEquals("Вход", driver.findElement(loginPage.getLoginHeader()).getText());
+
     }
 
     @Test
-    public void registerNewUserWithIncorrectPassword() throws InterruptedException {
-        WebDriver driver = browserRule.getDriver();
+    public void registerNewUserWithIncorrectPassword() {
 
+        WebDriver driver = browserRule.getDriver();
         RegisterPage registerPage = new RegisterPage(driver);
 
         registerPage.open();
@@ -79,7 +71,6 @@ public class RegisterTest {
         registerPage.clickNameLabel();
         registerPage.fillNameField();
 
-        Thread.sleep(3000);
         //генерация нового почтового адреса
         newEmail = UserGenerator.generateUserEmail();
 
@@ -87,13 +78,9 @@ public class RegisterTest {
         registerPage.clickEmailLabel();
         registerPage.fillEmailField(newEmail);
 
-        Thread.sleep(3000);
-
         //заполнение поля Пароль
         registerPage.clickPasswordLabel();
         registerPage.fillPasswordFieldWithWrongPassword();
-
-        Thread.sleep(3000);
 
         registerPage.clickRegistrationButton();
 
@@ -102,7 +89,7 @@ public class RegisterTest {
         //нажатие кнопки Зарегистрироваться
         registerPage.clickRegistrationButton();
 
-        Assert.assertEquals(driver.getCurrentUrl(), "https://stellarburgers.nomoreparties.site/register");
+        Assert.assertEquals(driver.getCurrentUrl(), REGISTER);
     }
 
     @After
@@ -110,10 +97,10 @@ public class RegisterTest {
 
         if (registered){
             try {
-                LoginUser loginUser = new LoginUser(newEmail, "111111");
+                LoginUser loginUser = new LoginUser(newEmail, PASSWORD);
                 String accessToken = check.getValidAccessToken(client.login(loginUser));
 
-                ValidatableResponse response = client.deleteUserSuccessfully(accessToken, newEmail);
+                ValidatableResponse response = client.deleteUserSuccessfully(accessToken, new DeleteUser(newEmail));
                 check.deleteUserSuccessfully(response);
             }
             catch (Exception e){
